@@ -1,0 +1,23 @@
+{
+  "name": "amazon-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yderek5/amazon-CLI.git"
+  },
+  "author": "Derek Young",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yderek5/amazon-CLI/issues"
+  },
+  "homepage": "https://github.com/yderek5/amazon-CLI#readme",
+  "dependencies": {
+    "inquirer": "^4.0.1",
+    "mysql": "^2.15.0"
+  }
+}
