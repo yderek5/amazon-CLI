@@ -1,6 +1,7 @@
 // npm packages
 var inq = require('inquirer');
 var mysql = require('mysql');
+var Table = require('cli-table');
 // Database connection info
 var connection = mysql.createConnection({
   host: 'localhost',
@@ -15,6 +16,7 @@ var quantityRequested;
 var itemQuantity;
 var itemPrice;
 var totalCost;
+var isPurchaseMade = false;
 // Connect to database
 connection.connect(function(err) {
   if (err) throw err;
@@ -24,13 +26,24 @@ connection.connect(function(err) {
 function printTable() {
   connection.query("SELECT * FROM products", function(err, item) {
     if (err) throw err;
+    var table = new Table({
+      head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Quantity'],
+      colWidths: [20, 20, 20, 20, 20]
+    });
     item.forEach(function(item) {
       // For each item in the array log the info
-      console.log(item.item_id + " | " + item.product_name + " | " +
-        item.department_name + " | " + "$" + item.price + ".00" +
-        " | " + item.stock_quantity);
+      table.push(
+        [item.item_id, item.product_name, item.department_name,
+          item.price, item.stock_quantity
+        ]
+      );
     });
-    pickItemId();
+    console.log(table.toString());
+    if(isPurchaseMade) {
+      connection.end();
+    } else {
+      pickItemId();
+    }
   });
 }
 // Pick an item via ID #
@@ -51,7 +64,7 @@ function pickItemId() {
           if (res.length > 0) {
             console.log("You have selected: " +
               res[0].product_name + ' $' + res[0].price + '.00 ' +
-              res[0].stock_quantity);
+              "each " + res[0].stock_quantity + " left");
             itemChosen = inqRes.whatId;
             itemQuantity = res[0].stock_quantity;
             itemPrice = res[0].price;
@@ -83,22 +96,14 @@ function chooseQuantity() {
       function(err, res) {
         if (err) {
           console.log(err);
-        } else if (quantityRequested < itemQuantity) {
+        } else if (quantityRequested <= itemQuantity) {
           connection.query("UPDATE products SET stock_quantity =" + "'" +
             itemQuantity + "'" + "WHERE item_id =" + "'" + itemChosen +
             "'");
           console.log("Purchase Successful! " + "Total Cost of Purchase: " +
-          "$" + totalCost);
-          connection.query("SELECT * FROM products", function(err, item) {
-            if (err) throw err;
-            item.forEach(function(item) {
-              // For each item in the array log the info
-              console.log(item.item_id + " | " + item.product_name + " | " +
-                item.department_name + " | " + "$" + item.price + ".00" +
-                " | " + item.stock_quantity);
-            });
-          });
-          connection.end();
+            "$" + totalCost);
+            isPurchaseMade = true;
+            printTable();
         } else {
           console.log("Sorry, We don't have that much in stock right now");
           pickItemId();
