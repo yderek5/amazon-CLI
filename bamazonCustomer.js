@@ -13,6 +13,7 @@ var connection = mysql.createConnection({
 // Variables related to selected item
 var itemChosen;
 var quantityRequested;
+var updatedQuantity;
 var itemQuantity;
 var itemPrice;
 var totalCost;
@@ -88,7 +89,7 @@ function chooseQuantity() {
     // This value is for later use
     quantityRequested = inqRes.quantity;
     // This value is for updating the database with remaining quantity
-    itemQuantity -= inqRes.quantity;
+    updatedQuantity = itemQuantity - quantityRequested;
     // This calculates the total cost
     totalCost = inqRes.quantity * itemPrice;
     connection.query("SELECT * FROM products WHERE item_id=" +
@@ -98,13 +99,13 @@ function chooseQuantity() {
           console.log(err);
         } else if (quantityRequested <= itemQuantity) {
           connection.query("UPDATE products SET stock_quantity =" + "'" +
-            itemQuantity + "'" + "WHERE item_id =" + "'" + itemChosen +
+            updatedQuantity + "'" + "WHERE item_id =" + "'" + itemChosen +
             "'");
           console.log("Purchase Successful! " + "Total Cost of Purchase: " +
             "$" + totalCost);
             isPurchaseMade = true;
             printTable();
-        } else {
+        } else if(quantityRequested > itemQuantity) {
           console.log("Sorry, We don't have that much in stock right now");
           pickItemId();
         }
