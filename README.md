@@ -1,6 +1,9 @@
 # CLI Store
-`node bamazonCustomer.js`
+Use
+\n`node bamazonCustomer.js`
 <br>
+\nor
 <br>
-`node bamazonManager.js`
-https://www.youtube.com/watch?v=4WF1V9dAVtY&feature=youtu.be
+\n`node bamazonManager.js`
+## Link to Youtube to see the app working
+\nhttps://www.youtube.com/watch?v=4WF1V9dAVtY&feature=youtu.be
