@@ -89,9 +89,9 @@ function viewLowInv() {
       });
       console.log(table.toString());
     });
-    if(isActionDone) {
-      connection.end();
-    }
+  if (isActionDone) {
+    connection.end();
+  }
 }
 // Add inventory to items
 function addToInv() {
@@ -156,5 +156,35 @@ function addToInv() {
 }
 
 function addNewProd() {
-
+  inq.prompt([{
+      type: 'input',
+      name: 'productName',
+      message: 'Name of Product: '
+    },
+    {
+      type: 'input',
+      name: 'departmentName',
+      message: 'Name of Department: '
+    },
+    {
+      type: 'input',
+      name: 'price',
+      message: 'Cost: '
+    },
+    {
+      type: 'input',
+      name: 'stockQuantity',
+      message: 'Quantity: '
+    }
+  ]).then(function(inqRes) {
+    connection.query("INSERT INTO products SET ?", {
+      product_name: inqRes.productName,
+      department_name: inqRes.departmentName,
+      price: inqRes.price,
+      stock_quantity: inqRes.stockQuantity
+    });
+    console.log("Item successfully added!");
+    isActionDone = true;
+    printTable();
+  });
 }
