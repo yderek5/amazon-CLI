@@ -1,1 +1,2 @@
-# amazon-CLI
+# CLI Store
+`node bamazonCustomer.js`
